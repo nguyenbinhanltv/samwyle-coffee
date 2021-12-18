@@ -1,1 +1,18 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local("Josefin Sans"), url(./assets/fonts/josefin-sans/JosefinSans-VariableFont_wght.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: 'Cedarville Cursive', cursive;
+  src: local("Cedarville Cursive"), url(./assets/fonts/cedarville-cursive/CedarvilleCursive-Regular.ttf) format("truetype");
+}
+
+*,
+body {
+  font-family: "Josefin Sans", Arial, Helvetica, sans-serif;
+}

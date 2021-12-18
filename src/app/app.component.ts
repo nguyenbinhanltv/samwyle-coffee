@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'samwyle-coffee';
+  isCollapsed = false;
+
+  constructor(private _activatedRoute: ActivatedRoute) {
+    this._activatedRoute.data.subscribe((a) => console.log(a));
+  }
 }
