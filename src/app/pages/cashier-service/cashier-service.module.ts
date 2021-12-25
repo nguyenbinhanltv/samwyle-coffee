@@ -10,6 +10,7 @@ import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 import { CardItemComponent } from './card-item/card-item.component';
 
@@ -27,7 +28,8 @@ import { CardItemComponent } from './card-item/card-item.component';
     NzCardModule,
     NzAvatarModule,
     NzSkeletonModule,
-    NzSwitchModule
+    NzSwitchModule,
+    NzImageModule
   ]
 })
 export class CashierServiceModule { }

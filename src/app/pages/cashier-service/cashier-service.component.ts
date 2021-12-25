@@ -7,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CashierServiceComponent implements OnInit {
   gridStyle = {
-    width: '25%',
-    textAlign: 'center'
+    width: '24%',
+    height: '24%',
+    textAlign: 'center',
+    margin: '5px'
   };
 
   constructor() { }

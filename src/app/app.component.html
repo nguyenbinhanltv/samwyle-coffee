@@ -72,7 +72,9 @@
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
               <a>
-                <span>Application List</span>
+                <span *ngIf="currentPage == '/cashier-service'">Danh mục sản phẩm</span>
+                <span *ngIf="currentPage == '/invoice-manager'">Quản lý hóa đơn</span>
+                <span *ngIf="currentPage == '/desk-manager'">Quản lý bàn</span>
               </a>
             </nz-breadcrumb-item>
           </nz-breadcrumb>

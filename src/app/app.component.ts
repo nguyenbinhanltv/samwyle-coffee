@@ -9,8 +9,15 @@ import { filter } from 'rxjs/operators';
 })
 export class AppComponent {
   isCollapsed = false;
+  currentPage!: string;
 
-  constructor(private _activatedRoute: ActivatedRoute) {
+  constructor(private _activatedRoute: ActivatedRoute, private router: Router) {
     this._activatedRoute.data.subscribe((a) => console.log(a));
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+  )
+      .subscribe((event) => {
+         this.currentPage = (event as NavigationEnd).url;
+      });
   }
 }

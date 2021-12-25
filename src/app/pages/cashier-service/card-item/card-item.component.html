@@ -2,13 +2,13 @@
   <nz-skeleton [nzActive]="true" [nzLoading]="loading" [nzAvatar]="{ size: 'large' }">
     <nz-card-meta
       [nzAvatar]="avatarTemplate"
-      nzTitle="Card title"
-      nzDescription="This is the description"
+      nzTitle="Bạc xỉu đá"
+      nzDescription="Sự kết hợp giữa cà phê và sữa tươi VN"
     ></nz-card-meta>
   </nz-skeleton>
 </div>
 <ng-template #avatarTemplate>
-  <nz-avatar nzSrc="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar>
+  <nz-avatar [nzShape]="'square'" [nzSize]="64" nzSrc="https://product.hstatic.net/1000075078/product/bac-siu-da_9bf82220a1a54847aa7357de541e7552_large.jpg"></nz-avatar>
 </ng-template>
 <ng-template #actionSetting>
   <i nz-icon nzType="setting"></i>
