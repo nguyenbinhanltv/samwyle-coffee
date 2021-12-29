@@ -11,16 +11,20 @@
       <li nz-submenu nzOpen nzTitle="Quầy phục vụ" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
+            <a routerLink="/danh-muc-san-pham">Danh mục sản phẩm</a>
+          </li>
+          <li nz-submenu nzTitle="Chi tiết">
+            <ul>
+              <li nz-menu-item *ngFor="let cate of categories">
+                <a [routerLink]="'/danh-muc-san-pham/' + cate.path">{{cate.name}}</a>
+              </li>
+            </ul>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/cashier-service">Danh mục sản phẩm</a>
+            <a routerLink="/quan-ly-hoa-don">Quản lý hóa đơn</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/invoice-manager">Quản lý hóa đơn</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/desk-manager">Quản lý bàn</a>
+            <a routerLink="/quan-ly-ban">Quản lý bàn</a>
           </li>
         </ul>
       </li>
@@ -72,9 +76,9 @@
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
               <a>
-                <span *ngIf="currentPage == '/cashier-service'">Danh mục sản phẩm</span>
-                <span *ngIf="currentPage == '/invoice-manager'">Quản lý hóa đơn</span>
-                <span *ngIf="currentPage == '/desk-manager'">Quản lý bàn</span>
+                <span *ngIf="currentPage.startsWith('/danh-muc-san-pham')">Danh mục sản phẩm</span>
+                <span *ngIf="currentPage.startsWith('/quan-ly-hoa-don')">Quản lý hóa đơn</span>
+                <span *ngIf="currentPage.startsWith('/quan-ly-ban')">Quản lý bàn</span>
               </a>
             </nz-breadcrumb-item>
           </nz-breadcrumb>

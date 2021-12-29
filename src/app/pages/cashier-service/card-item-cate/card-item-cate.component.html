@@ -1,0 +1,7 @@
+<nz-card nzHoverable [nzCover]="coverTemplate">
+  <nz-card-meta [nzTitle]="title" [nzDescription]="description + '.000 đ'"></nz-card-meta>
+</nz-card>
+<ng-template #coverTemplate>
+  <img alt="example"
+    [src]="imageUrl ? imageUrl : 'https://product.hstatic.net/1000075078/product/bac-siu-da_9bf82220a1a54847aa7357de541e7552_large.jpg'" />
+</ng-template>

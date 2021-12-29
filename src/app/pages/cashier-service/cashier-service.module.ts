@@ -11,15 +11,18 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { CardItemComponent } from './card-item/card-item.component';
+import { CardItemCateComponent } from './card-item-cate/card-item-cate.component';
 
 
 @NgModule({
   declarations: [
     CashierServiceComponent,
     CarouselComponent,
-    CardItemComponent
+    CardItemComponent,
+    CardItemCateComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +32,8 @@ import { CardItemComponent } from './card-item/card-item.component';
     NzAvatarModule,
     NzSkeletonModule,
     NzSwitchModule,
-    NzImageModule
+    NzImageModule,
+    NzGridModule,
   ]
 })
 export class CashierServiceModule { }
