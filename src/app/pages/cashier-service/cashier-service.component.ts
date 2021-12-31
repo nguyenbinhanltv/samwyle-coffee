@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin, Subscription } from 'rxjs';
 import { Category } from 'src/app/models/category.inteface';
 import { Product } from 'src/app/models/product.interface';
 import { CommonService } from 'src/app/services/common.service';
@@ -19,29 +20,49 @@ export class CashierServiceComponent implements OnInit {
   };
 
   categories!: Category[];
+  category!: string;
   products!: Product[];
 
-  constructor(private _productService: ProductService, private _commonService: CommonService) { }
-
-  ngOnInit(): void {
-    this._commonService.attachSpinner();
-    this.initPage();
+  constructor(private _productService: ProductService, private _commonService: CommonService, private _activateRoute: ActivatedRoute) {
+    this._activateRoute.params.subscribe(params => {
+      this.category = params['category'];
+      this.initPage();
+    });
   }
 
-  initPage(): void {
+  ngOnInit(): void {
+  }
 
-    forkJoin({
+  ngOnDestroy(): void {
+    this.initPage().unsubscribe();
+    this._commonService.detachSpinner();
+  }
+
+  initPage(): Subscription {
+    this._commonService.attachSpinner();
+
+    return forkJoin({
       categories: this._productService.getCategories(),
-      products: this._productService.getProducts()
+      products: this._productService.getProducts(),
     }).subscribe(response => {
       if (response.categories.statusCode === 200 && response.products.statusCode === 200) {
-        this.categories = response.categories.data;
-        this.products = response.products.data;
+
+        if (this.category) {
+          this.categories = (response.categories.data as Category[]).filter(c => c.path == this.category);
+          this.products = this.getProductByCategoryPath(this.category, response.products.data);
+        } else {
+          this.categories = response.categories.data;
+          this.products = response.products.data as Product[];
+        }
         this._commonService.detachSpinner();
       } else {
         this._commonService.detachSpinner();
       }
     });
+  }
+
+  getProductByCategoryPath(categoryPath: string, products: Product[]): Product[] {
+    return products.filter(product => product.category_id.path === categoryPath);
   }
 
   getProductByCategory(categoryId: number, products: Product[]): Product[] {

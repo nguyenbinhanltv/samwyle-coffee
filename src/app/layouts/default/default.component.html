@@ -1,11 +1,135 @@
-<div>
-  <div class="w-full h-1/5">
-    <app-header></app-header>
+<div class="container" [ngClass]="{'sign-up-mode' : themeMode == false}">
+  <div class="forms-container">
+    <div class="signin-signup">
+      <form nz-form [formGroup]="validateLoginForm" class="login-form sign-in-form">
+        <h2 class="title">Sign in</h2>
+        <nz-form-item style="width: 50%;">
+          <nz-form-control nzErrorTip="Please input your username!">
+            <nz-input-group nzPrefixIcon="user">
+              <input type="text" nz-input formControlName="username" placeholder="Username" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="width: 50%;">
+          <nz-form-control nzErrorTip="Please input your Password!">
+            <nz-input-group nzPrefixIcon="lock">
+              <input type="password" nz-input formControlName="password" placeholder="Password" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <div nz-row class="login-form-margin">
+          <div nz-col [nzSpan]="12">
+            <label nz-checkbox formControlName="remember">
+              <span>Remember me</span>
+            </label>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <a class="login-form-forgot">Forgot password</a>
+          </div>
+        </div>
+        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="submitLoginForm()">Log in</button>
+      </form>
+      <form nz-form [formGroup]="validateEnquiryForm" (ngSubmit)="submitEnquiryForm()" class="sign-up-form">
+        <h2 class="title">Enquiry</h2>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Name</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your password!">
+            <input nz-input id="name" formControlName="name" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">E-mail</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
+            <input nz-input formControlName="email" id="email" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="nickname" nzRequired
+            nzTooltipTitle="What do you want other to call you">
+            <span>Nickname</span>
+          </nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your nickname!">
+            <input nz-input id="nickname" formControlName="nickname" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber" nzRequired>Phone Number</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzValidateStatus]="validateEnquiryForm.controls['phoneNumber']"
+            nzErrorTip="Please input your phone number!">
+            <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+              <ng-template #addOnBeforeTemplate>
+                <nz-select formControlName="phoneNumberPrefix" class="phone-select">
+                  <nz-option nzLabel="+61" nzValue="+61"></nz-option>
+                  <nz-option nzLabel="+84" nzValue="+84"></nz-option>
+                  <nz-option nzLabel="+85" nzValue="+85"></nz-option>
+                  <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+                </nz-select>
+              </ng-template>
+              <input formControlName="phoneNumber" id="'phoneNumber'" nz-input />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="subject">Subject</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your subject!">
+            <input nz-input formControlName="subject" id="subject" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="message">Message</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your message!">
+            <textarea formControlName="message" nz-input rows="2"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <div class="upload-file">
+          <nz-upload [nzHeaders]="{ authorization: 'authorization-text' }" nzType="drag" [nzDisabled]="true">
+            <p class="ant-upload-drag-icon">
+              <i nz-icon nzType="inbox"></i>
+            </p>
+            <input type="file" (change)="handleChange($event)">
+          </nz-upload>
+          <nz-progress *ngIf="percentage | async as pct" [nzPercent]="getInt(pct)" nzSize="small"></nz-progress>
+        </div>
+        <nz-form-item nz-row class="register-area">
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <label nz-checkbox formControlName="agree">
+              <span>
+                I have read the
+                <a>agreement</a>
+              </span>
+            </label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row class="register-area">
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary" [disabled]="!validateEnquiryForm.value.agree">Submit</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
   </div>
-  <div class="w-full h-3/5">
-    <router-outlet></router-outlet>
-  </div>
-  <div class="w-full h-1/5">
-    <app-footer></app-footer>
+
+  <div class="panels-container">
+    <div class="panel left-panel">
+      <div class="content">
+        <h3>New here ?</h3>
+        <p>
+          Hi there, please fill out this form and we will contact you shortly!
+        </p>
+        <button class="btn transparent" (click)="themeMode = false">
+          Enquiry
+        </button>
+      </div>
+      <img src="../../../assets/images/log.svg" class="image" alt="" />
+    </div>
+    <div class="panel right-panel">
+      <div class="content">
+        <h3>Marriott NDIS Management Services</h3>
+        <button class="btn transparent" (click)="themeMode = true">
+          Sign in
+        </button>
+      </div>
+      <img src="../../../assets/images/register.svg" class="image" alt="" />
+    </div>
   </div>
 </div>

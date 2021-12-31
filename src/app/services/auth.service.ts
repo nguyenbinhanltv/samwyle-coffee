@@ -1,4 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { ResponseAPI } from '../models/response.interface';
 import { User } from '../models/user.interface';
 
 @Injectable({
@@ -6,12 +11,44 @@ import { User } from '../models/user.interface';
 })
 export class AuthService {
   currentUser: User = {
-    username: "admin",
-    token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpRDJHdEVrMVg0aGlpUk93RVdZTFhkWFZNOWpZMzVna09vajFjQmh4Y3F3In0.eyJleHAiOjE2NDA3MjQyNzcsImlhdCI6MTY0MDY4ODI3OSwianRpIjoiNmI0Y2FlYWUtYTlhOC00ZDZiLWJkYTYtYjMyZTdjZmE1NjIyIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay1kb2FuLmhlcm9rdWFwcC5jb20vcmVhbG1zL3RoZWNvZmZlZWhvdXNlIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImMyOGM1ZjdlLWQ3OWUtNDA0MC1hMTgxLTkyYzk4MmFiMzMzYiIsInR5cCI6IkJlYXJlciIsImF6cCI6InRoZWNvZmZlZWhvdXNlIiwic2Vzc2lvbl9zdGF0ZSI6IjQ0Y2U0MTQxLTJkY2MtNDVlMC04MWM1LWM3MDBhMjgyODBiOSIsImFjciI6IjEiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtdGhlY29mZmVlaG91c2UiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiI0NGNlNDE0MS0yZGNjLTQ1ZTAtODFjNS1jNzAwYTI4MjgwYjkiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIn0.K1Mne4tHuOTM3Z_P_p-IyZ9r6Zv4WlBxo4oICR3TMWkldu8-kQUk2zQcn33-q_irr3GXtLUzjPpXmKEFClzPTUOt9XkaUodd_L30uUAdKdFc5KFKvVQXaLO4sJNWyfMFPuN6_BlgPT6zVks33wNx57oODIFG0EFB--pCqMGHiAHrbxvATFJXV7TdHkiMlB0qcVyixRJ3PeuxmATsoU3zK08Iwq4mK_bnR3dOrndGv9aP6s9NkPuki-YZQGRT1Z6bOwHjvoEXRIMXfWONnu9lvhDZ4xhykHJLtJOwLG4rOwOGHFCy6tTpBUeneMCIHAVgoQP8WtKl2YLv-y0grINGZg"
+    id: '',
+    first_name: '',
+    last_name: '',
+    username: '',
+    email: '',
+    token: '',
+    password: '',
   };
-  constructor() { }
+  constructor(private _http: HttpClient, private _router: Router) {
+  }
 
   get getToken() {
     return this.currentUser.token;
+  }
+
+  login(userForm: User): Observable<ResponseAPI> {
+    return this._http.post<ResponseAPI>(environment.ApiEndpoint + 'auth', userForm);
+  }
+
+  logout() {
+    this.currentUser = {
+      id: '',
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+      token: '',
+      password: '',
+    };
+
+    this._router.navigate(['dang-nhap']);
+  }
+
+  getUserInfor(accessToken: string): Observable<ResponseAPI> {
+    return this._http.get<ResponseAPI>(environment.ApiEndpoint + `auth?access_token=${accessToken}`);
+  }
+
+  authenticated(): boolean {
+    return this.currentUser.token ? true : false;
   }
 }
