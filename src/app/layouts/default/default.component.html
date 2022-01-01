@@ -1,8 +1,8 @@
 <div class="container" [ngClass]="{'sign-up-mode' : themeMode == false}">
   <div class="forms-container">
     <div class="signin-signup">
-      <form nz-form [formGroup]="validateLoginForm" class="login-form sign-in-form">
-        <h2 class="title">Sign in</h2>
+      <form nz-form [formGroup]="validateLoginForm" (ngSubmit)="submitEnquiryForm()" class="login-form sign-in-form">
+        <h2 class="title">Đăng nhập</h2>
         <nz-form-item style="width: 50%;">
           <nz-form-control nzErrorTip="Please input your username!">
             <nz-input-group nzPrefixIcon="user">
@@ -20,17 +20,17 @@
         <div nz-row class="login-form-margin">
           <div nz-col [nzSpan]="12">
             <label nz-checkbox formControlName="remember">
-              <span>Remember me</span>
+              <span>Nhớ</span>
             </label>
           </div>
           <div nz-col [nzSpan]="12">
-            <a class="login-form-forgot">Forgot password</a>
+            <a class="login-form-forgot">Quên mật khẩu ?</a>
           </div>
         </div>
-        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="submitLoginForm()">Log in</button>
+        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="submitLoginForm()">Đăng nhập</button>
       </form>
-      <form nz-form [formGroup]="validateEnquiryForm" (ngSubmit)="submitEnquiryForm()" class="sign-up-form">
-        <h2 class="title">Enquiry</h2>
+      <form nz-form [formGroup]="validateEnquiryForm" class="sign-up-form">
+        <h2 class="title">Khảo sát</h2>
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Name</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your password!">
@@ -94,15 +94,15 @@
           <nz-form-control [nzSpan]="14" [nzOffset]="6">
             <label nz-checkbox formControlName="agree">
               <span>
-                I have read the
-                <a>agreement</a>
+                Tôi đã đọc
+                <a>hợp đồng</a>
               </span>
             </label>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row class="register-area">
           <nz-form-control [nzSpan]="14" [nzOffset]="6">
-            <button nz-button nzType="primary" [disabled]="!validateEnquiryForm.value.agree">Submit</button>
+            <button nz-button nzType="primary" [disabled]="!validateEnquiryForm.value.agree">Gửi</button>
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -112,21 +112,21 @@
   <div class="panels-container">
     <div class="panel left-panel">
       <div class="content">
-        <h3>New here ?</h3>
+        <h3>Thành viên mới ?</h3>
         <p>
-          Hi there, please fill out this form and we will contact you shortly!
+          Xin chào, vui lòng điền vào biểu mẫu này và chúng tôi sẽ liên hệ với bạn trong thời gian ngắn!
         </p>
         <button class="btn transparent" (click)="themeMode = false">
-          Enquiry
+          Đơn khảo sát
         </button>
       </div>
       <img src="../../../assets/images/log.svg" class="image" alt="" />
     </div>
     <div class="panel right-panel">
       <div class="content">
-        <h3>Marriott NDIS Management Services</h3>
-        <button class="btn transparent" (click)="themeMode = true">
-          Sign in
+        <h3>Khảo sát ứng dụng quản lý quán cà phê</h3>
+        <button class="btn transparent mt-6" (click)="themeMode = true">
+          Đăng nhập
         </button>
       </div>
       <img src="../../../assets/images/register.svg" class="image" alt="" />

@@ -16,6 +16,10 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
 
 @NgModule({
   declarations: [
@@ -34,6 +38,10 @@ import { HttpClientModule } from '@angular/common/http';
     NzGridModule,
     IconsProviderModule,
     CommonComponentModule,
+    NzBadgeModule,
+    NzDropDownModule,
+    NzMessageModule,
+    NzStepsModule
   ],
   providers: [CommonService]
 })

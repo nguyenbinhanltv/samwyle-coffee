@@ -1,145 +1,155 @@
-<button nz-button [nzType]="'primary'" (click)="showModal()"><span>Show Modal</span></button>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<button nz-button [nzType]="'primary'" (click)="showModal()" class="my-10"><span>Tạo hóa đơn</span></button>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Thêm thông tin chi tiết hóa đơn" [nzWidth]="'80%'" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
-    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">E-mail</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
-          <input nz-input formControlName="email" id="email" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="password" nzRequired>Password</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your password!">
-          <input
-            nz-input
-            type="password"
-            id="password"
-            formControlName="password"
-            (ngModelChange)="updateConfirmValidator()"
-          />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="checkPassword" nzRequired>Confirm Password</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="errorTpl">
-          <input nz-input type="password" formControlName="checkPassword" id="checkPassword" />
-          <ng-template #errorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
-            <ng-container *ngIf="control.hasError('confirm')">
-              Two passwords that you enter is inconsistent!
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label
-          [nzSm]="6"
-          [nzXs]="24"
-          nzFor="nickname"
-          nzRequired
-          nzTooltipTitle="What do you want other to call you"
-        >
-          <span>Nickname</span>
-        </nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your nickname!">
-          <input nz-input id="nickname" formControlName="nickname" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber" nzRequired>Phone Number</nz-form-label>
-        <nz-form-control
-          [nzSm]="14"
-          [nzXs]="24"
-          [nzValidateStatus]="validateForm.controls['phoneNumber']"
-          nzErrorTip="Please input your phone number!"
-        >
-          <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-            <ng-template #addOnBeforeTemplate>
-              <nz-select formControlName="phoneNumberPrefix" class="phone-select">
-                <nz-option nzLabel="+86" nzValue="+86"></nz-option>
-                <nz-option nzLabel="+87" nzValue="+87"></nz-option>
-              </nz-select>
-            </ng-template>
-            <input formControlName="phoneNumber" id="'phoneNumber'" nz-input />
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="website" nzRequired>Website</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input website!">
-          <input nz-input id="website" formControlName="website" placeholder="website" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label
-          [nzSm]="6"
-          [nzXs]="24"
-          nzFor="captcha"
-          nzRequired
-          nzTooltipTitle="Please click 'Get captcha'"
-          [nzTooltipIcon]="captchaTooltipIcon"
-        >
-          Captcha
-        </nz-form-label>
-        <nz-form-control
-          [nzSm]="14"
-          [nzXs]="24"
-          nzErrorTip="Please input the captcha you got!"
-          nzExtra="We must make sure that your are a human."
-        >
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <input nz-input formControlName="captcha" id="captcha" />
-            </div>
-            <div nz-col [nzSpan]="12">
-              <button nz-button (click)="getCaptcha($event)">Get captcha</button>
+    <nz-steps [nzCurrent]="current" (nzIndexChange)="onIndexChange($event)">
+      <nz-step nzTitle="Chọn thức uống và món ăn" [nzDisabled]="disable">
+      </nz-step>
+      <nz-step nzTitle="Chọn bàn">
+      </nz-step>
+      <nz-step nzTitle="Tổng thông tin hóa đơn">
+      </nz-step>
+    </nz-steps>
+    <div class="steps-content">
+      <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
+        <nz-form-item *ngIf="current == 0">
+          <nz-form-label [nzSpan]="7" nzRequired>Trạng thái</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..."
+            nzErrorTip="Hãy chọn trạng thái đơn hàng">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn trạng thái đơn hàng" formControlName="status">
+              <nz-option *ngFor="let st of status" [nzLabel]="st.name" [nzValue]="st.status"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="current == 0">
+          <nz-form-label [nzSpan]="7" nzRequired>Chọn món ăn và thức uống</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..."
+            nzErrorTip="Please input description!">
+            <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+              nzPlaceHolder="Chọn món ăn và thức uống" [(ngModel)]="listOfSelectedValue"
+              (ngModelChange)="onListProductChange($event)" [ngModelOptions]="{standalone: true}">
+              <nz-option *ngFor="let pro of products" [nzLabel]="pro.name" [nzValue]="pro"></nz-option>
+            </nz-select>
+            <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <div *ngIf="listOfSelectedValue && current == 0" class="px-4">
+          <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" class="justify-around">
+            <div nz-col class="gutter-row" [nzSpan]="4" *ngFor="let product of listOfSelectedValue; let i = index">
+              <div class="inner-box">
+                <app-card-item-cate [imageUrl]="product.image_path" [title]="product.name"
+                  [description]="product.price.toString()">
+                </app-card-item-cate>
+              </div>
+              <div class="flex justify-between items-center my-2">
+                <label for="">Số lượng:</label>
+                <nz-input-number [nzMin]="1" [nzMax]="10" [nzStep]="1" [(ngModel)]="orderLine[i].quantity"
+                  [ngModelOptions]="{standalone: true}"></nz-input-number>
+              </div>
+              <div class="flex justify-between items-center my-2">
+                <label for="">Tổng cộng:</label>
+                <p>{{product.price * orderLine[i].quantity}}.000 đ</p>
+              </div>
             </div>
           </div>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item nz-row class="register-area">
-        <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <label nz-checkbox formControlName="agree">
-            <span>
-              I have read the
-              <a>agreement</a>
-            </span>
-          </label>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item nz-row class="register-area">
-        <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <button nz-button nzType="primary">Register</button>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+        </div>
+        <nz-form-item *ngIf="current == 1">
+          <nz-form-label [nzSpan]="7" nzRequired>Chọn bàn</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..."
+            nzErrorTip="Hãy chọn trạng thái đơn hàng">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn bàn đang trống" formControlName="table_id">
+              <nz-option *ngFor="let tb of tables" [nzLabel]="tb.path" [nzValue]="tb.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <div *ngIf="tables && current == 1" class="px-4">
+          <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }" class="justify-around">
+            <div nz-col class="gutter-row" [nzSpan]="8" *ngFor="let table of tables; let i = index">
+              <div class="inner-box">
+                <app-table-card [tableId]="table.id" [tableName]="table.path" [status]="table.status"></app-table-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   </ng-container>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Hủy bỏ</button>
+    <button nz-button nzType="primary" (click)="handleOk()">Tạo</button>
+  </div>
 </nz-modal>
-<div class="send-request">
-  <button nz-button nzType="primary" [disabled]="setOfCheckedId.size === 0" [nzLoading]="loading"
-    (click)="sendRequest()">
-    Send Request
-  </button>
-  <span>Selected {{ setOfCheckedId.size }} items</span>
-</div>
-<nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData"
-  (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+
+<nz-table nzShowPagination #nzTable [nzData]="listOfData" nzTableLayout="fixed">
   <thead>
     <tr>
-      <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Address</th>
+      <th nzWidth="60px"></th>
+      <th>Trạng thái</th>
+      <th>Bàn đặt</th>
+      <th>Tổng tax</th>
+      <th>Tổng thanh toán</th>
+      <th>Thời gian tạo đơn hàng</th>
+      <th>Chức năng</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of rowSelectionTable.data">
-      <td [nzChecked]="setOfCheckedId.has(data.id)" [nzDisabled]="data.disabled"
-        (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-      <td>{{ data.name }}</td>
-      <td>{{ data.age }}</td>
-      <td>{{ data.address }}</td>
-    </tr>
+    <ng-container *ngFor="let data of nzTable.data">
+      <tr>
+        <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+        <td *ngIf="data.status == 'doing'">
+          <nz-badge nzStatus="processing">
+            <nz-tag [nzColor]="'#1890ff'">Đợi thanh toán</nz-tag>
+          </nz-badge>
+        </td>
+        <td *ngIf="data.status == 'staff'">
+          <nz-badge nzStatus="default">
+            <nz-tag [nzColor]="'#d9d9d9'">Đang lên đơn</nz-tag>
+          </nz-badge>
+        </td>
+        <td *ngIf="data.status == 'paid'">
+          <nz-badge nzStatus="success">
+            <nz-tag [nzColor]="'#52c41a'">Đã thanh toán</nz-tag>
+          </nz-badge>
+        </td>
+        <td>{{ data.table_id }}</td>
+        <td>{{ data.tax }}</td>
+        <td>{{ data.total }}.000 đ</td>
+        <td>{{ data.create_date | date:'short' }}</td>
+        <td>
+          <a>
+            <nz-tag [nzColor]="'#52c41a'">Cật nhật</nz-tag>
+          </a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a nz-popconfirm nzPopconfirmTitle="Bạn chắc chắn muốn xóa đơn hàng này?" nzPopconfirmPlacement="bottom">
+            <nz-tag [nzColor]="'#ff4d4f'">Xóa</nz-tag>
+          </a>
+        </td>
+      </tr>
+      <tr [nzExpand]="expandSet.has(data.id)">
+        <nz-table #nzTable1 [nzData]="data.order_line" nzTableLayout="fixed">
+          <thead>
+            <tr>
+              <th>Mã số</th>
+              <th>Sản phẩm</th>
+              <th>Số lượng</th>
+              <th>Đơn giá</th>
+              <th>Tổng tiền</th>
+              <th>Thời gian tạo</th>
+            </tr>
+          </thead>
+  <tbody>
+    <ng-container *ngFor="let line of nzTable1.data">
+      <tr>
+        <td>{{ line.id }}</td>
+        <td>{{ _productService.findProduct(line.product_id, products).name }}</td>
+        <td>{{ line.quantity }}</td>
+        <td>{{ line.price }}.000 đ</td>
+        <td>{{ line.amount }}.000 đ</td>
+        <td>{{ line.create_date | date:'short' }}</td>
+      </tr>
+    </ng-container>
   </tbody>
+</nz-table>
+</tr>
+</ng-container>
+</tbody>
 </nz-table>

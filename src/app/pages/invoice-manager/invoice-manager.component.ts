@@ -2,6 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { NzFormTooltipIcon } from 'ng-zorro-antd/form';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { forkJoin, Subscription } from 'rxjs';
+import { Order, OrderLine, OrderStatus } from 'src/app/models/order.inteerface';
+import { Product } from 'src/app/models/product.interface';
+import { Table } from 'src/app/models/table.interface';
+import { CommonService } from 'src/app/services/common.service';
+import { InvoiceService } from 'src/app/services/invoice.service';
+import { ProductService } from 'src/app/services/product.service';
+import { TableService } from 'src/app/services/table.service';
 
 export interface Data {
   id: number;
@@ -17,49 +26,64 @@ export interface Data {
   styleUrls: ['./invoice-manager.component.scss']
 })
 export class InvoiceManagerComponent implements OnInit {
+  tabs = [1, 2, 3];
 
-  checked = false;
-  loading = false;
-  indeterminate = false;
-  listOfData: readonly Data[] = [];
-  listOfCurrentPageData: readonly Data[] = [];
-  setOfCheckedId = new Set<number>();
-  isVisible = false;
+  isVisible: boolean = false;
+
+  listOfData: Order[] = [];
+  listOfCurrentPageData: Order[] = [];
+  expandSet = new Set<number>();
+
+  products: Product[] = [];
+  tables: Table[] = [];
+
+  current = 0;
+  disable = false;
   validateForm!: FormGroup;
-  captchaTooltipIcon: NzFormTooltipIcon = {
-    type: 'info-circle',
-    theme: 'twotone'
-  };
+  status!: Array<{ name: string, status: OrderStatus }>;
 
-  submitForm(): void {
-    if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
-    } else {
-      Object.values(this.validateForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-    }
+  listOfSelectedValue: Product[] = [];
+  orderLine: OrderLine[] = [];
+
+  constructor(
+    private fb: FormBuilder,
+    private _invoiceService: InvoiceService,
+    private _commonService: CommonService,
+    public _productService: ProductService,
+    private message: NzMessageService,
+    private _tableService: TableService
+  ) {
   }
 
-  updateConfirmValidator(): void {
-    /** wait for refresh value */
-    Promise.resolve().then(() => this.validateForm.controls.checkPassword.updateValueAndValidity());
+  ngOnInit(): void {
+    this.initPage();
+
+    this.status = [
+      {
+        name: 'Đã thanh toán',
+        status: OrderStatus.PAID
+      },
+      {
+        name: 'Chưa thanh toán',
+        status: OrderStatus.STAFF
+      },
+      {
+        name: 'Chờ thanh toán',
+        status: OrderStatus.DOING
+      },
+    ];
+
+    this.validateForm = this.fb.group({
+      status: ['', [Validators.required]],
+      tax: [10, [Validators.required]],
+      table_id: [0, [Validators.required]],
+      order_line: [[], [Validators.required]],
+      total: [0, [Validators.required]],
+    });
   }
 
-  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
-    if (!control.value) {
-      return { required: true };
-    } else if (control.value !== this.validateForm.controls.password.value) {
-      return { confirm: true, error: true };
-    }
-    return {};
-  };
-
-  getCaptcha(e: MouseEvent): void {
-    e.preventDefault();
+  onIndexChange(index: number): void {
+    this.current = index;
   }
 
   showModal(): void {
@@ -67,79 +91,81 @@ export class InvoiceManagerComponent implements OnInit {
   }
 
   handleOk(): void {
-    console.log('Button ok clicked!');
+    this.submitForm(this.validateForm.value);
     this.isVisible = false;
   }
 
   handleCancel(): void {
-    console.log('Button cancel clicked!');
     this.isVisible = false;
   }
 
-  updateCheckedSet(id: number, checked: boolean): void {
+  onExpandChange(id: number, checked: boolean): void {
     if (checked) {
-      this.setOfCheckedId.add(id);
+      this.expandSet.add(id);
     } else {
-      this.setOfCheckedId.delete(id);
+      this.expandSet.delete(id);
     }
   }
 
-  onCurrentPageDataChange(listOfCurrentPageData: readonly Data[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
+  initPage(): Subscription {
 
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData.filter(({ disabled }) => !disabled);
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
-  }
+    this._commonService.attachSpinner();
+    return forkJoin({
+      orders: this._invoiceService.getAllOrder(),
+      products: this._productService.getProducts(),
+      tables: this._tableService.getTables()
+    }).subscribe(response => {
+      if (response.products.statusCode === 200) {
+        this.products = response.products.data as Product[];
+      }
 
-  onItemChecked(id: number, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
-  }
+      if (response.orders.statusCode === 200) {
+        this.listOfData = response.orders.data as Order[];
+      }
 
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-      .filter(({ disabled }) => !disabled)
-      .forEach(({ id }) => this.updateCheckedSet(id, checked));
-    this.refreshCheckedStatus();
-  }
+      if (response.tables.statusCode === 200) {
+        this.tables = response.tables.data as Table[];
+      }
 
-  sendRequest(): void {
-    this.loading = true;
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.id));
-    console.log(requestData);
-    setTimeout(() => {
-      this.setOfCheckedId.clear();
-      this.refreshCheckedStatus();
-      this.loading = false;
-    }, 1000);
-  }
-
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.listOfData = new Array(100).fill(0).map((_, index) => ({
-      id: index,
-      name: `Edward King ${index}`,
-      age: 32,
-      address: `London, Park Lane no. ${index}`,
-      disabled: index % 2 === 0
-    }));
-
-    this.validateForm = this.fb.group({
-      email: [null, [Validators.email, Validators.required]],
-      password: [null, [Validators.required]],
-      checkPassword: [null, [Validators.required, this.confirmationValidator]],
-      nickname: [null, [Validators.required]],
-      phoneNumberPrefix: ['+86'],
-      phoneNumber: [null, [Validators.required]],
-      website: [null, [Validators.required]],
-      captcha: [null, [Validators.required]],
-      agree: [false]
+      this._commonService.detachSpinner();
     });
   }
 
+  submitForm(value: Order): void {
+    for (const key in this.validateForm.controls) {
+      this.validateForm.controls[key].markAsDirty();
+      this.validateForm.controls[key].updateValueAndValidity();
+    }
+
+    let total = 0;
+    for (const [index, value] of this.orderLine.entries()) {
+      this.orderLine[index].amount = value.price * value.quantity;
+      total += value.price * value.quantity;
+    }
+
+    value.order_line = this.orderLine;
+    value.total = total;
+
+    this._invoiceService.createOrder(value).subscribe(response => {
+      if (response.statusCode === 201) {
+        this.message.success('Tạo hóa đơn thành công');
+        this.handleCancel();
+      } else {
+        this.message.error('Tạo hóa đơn thất bại');
+      }
+    });
+    console.log(value);
+  }
+
+  onListProductChange($event: Product[]) {
+    this.orderLine = [];
+    for (let prod of $event) {
+      this.orderLine.push({
+        product_id: prod.id,
+        quantity: 0,
+        price: prod.price,
+        amount: 0,
+      });
+    }
+  }
 }

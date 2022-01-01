@@ -5,6 +5,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.head-example {
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  background: #eee;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .app-layout {
   height: 100vh;
   width: 100vw;
@@ -18,7 +27,6 @@
 }
 
 .header-trigger {
-  height: 64px;
   padding: 20px 24px;
   font-size: 20px;
   cursor: pointer;
@@ -63,11 +71,15 @@ nz-header {
 }
 
 .app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: relative;
   height: 64px;
   padding: 0;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  padding-right: 50px;
 }
 
 nz-content {

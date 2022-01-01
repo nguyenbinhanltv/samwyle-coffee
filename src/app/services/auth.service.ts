@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ResponseAPI } from '../models/response.interface';
 import { User } from '../models/user.interface';
@@ -19,12 +19,25 @@ export class AuthService {
     token: '',
     password: '',
   };
+
+  authState = new BehaviorSubject(false);
   constructor(private _http: HttpClient, private _router: Router) {
   }
 
   get getToken() {
     return this.currentUser.token;
   }
+
+  public isAuthenticated(): Promise<boolean> {
+
+		if (this.getToken) {
+			this.authState.next(true);
+		} else {
+			this.authState.next(false);
+		}
+
+		return new Promise((resolve) => { resolve(this.authState.value); });
+	}
 
   login(userForm: User): Observable<ResponseAPI> {
     return this._http.post<ResponseAPI>(environment.ApiEndpoint + 'auth', userForm);
@@ -41,6 +54,7 @@ export class AuthService {
       password: '',
     };
 
+    localStorage.removeItem('access_token');
     this._router.navigate(['dang-nhap']);
   }
 

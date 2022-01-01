@@ -1,0 +1,9 @@
+<div style="background: #ECECEC;padding:30px;">
+  <nz-card [nzBordered]="false" [nzTitle]="'Bàn số ' + tableId" [nzExtra]="extraTemplate">
+    <nz-empty></nz-empty>
+  </nz-card>
+</div>
+<ng-template #extraTemplate>
+  <nz-tag [nzColor]="'#52c41a'" *ngIf="status == 'offline'">Đang trống</nz-tag>
+  <nz-tag [nzColor]="'#ff4d4f'" *ngIf="status == 'online'">Đang sử dụng</nz-tag>
+</ng-template>

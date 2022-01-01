@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -48,18 +48,27 @@ export class DefaultComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.login().unsubscribe();
+  }
+
   submitLoginForm(): void {
     for (const i in this.validateLoginForm.controls) {
       this.validateLoginForm.controls[i].markAsDirty();
       this.validateLoginForm.controls[i].updateValueAndValidity();
     }
 
-    this._authService.login(this.validateLoginForm.value).subscribe(
+    this.login();
+  }
+
+  login(): Subscription {
+    return this._authService.login(this.validateLoginForm.value).subscribe(
       respone => {
         if (respone.statusCode === 201) {
           this._authService.currentUser.token = respone.data.access_token;
+          localStorage.setItem('access_token', respone.data.access_token);
           this._message.success(`Đăng nhập thành công !`);
-              this._router.navigate(['danh-muc-san-pham']);
+          this._router.navigate(['danh-muc-san-pham']);
           // if (this._authService.getToken) {
           //   this._authService.getUserInfor(this._authService.getToken).subscribe(user => {
           //     this._authService.currentUser = user.data;

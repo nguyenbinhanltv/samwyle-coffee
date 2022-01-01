@@ -11,47 +11,37 @@
       <li nz-submenu nzOpen nzTitle="Quầy phục vụ" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/danh-muc-san-pham">Danh mục sản phẩm</a>
+            <a routerLink="phuc-vu/danh-muc-san-pham">Danh mục sản phẩm</a>
           </li>
           <li nz-submenu nzTitle="Chi tiết">
             <ul>
               <li nz-menu-item *ngFor="let cate of categories">
-                <a [routerLink]="'/danh-muc-san-pham/' + cate.path">{{cate.name}}</a>
+                <a [routerLink]="'phuc-vu/danh-muc-san-pham/' + cate.path">{{cate.name}}</a>
               </li>
             </ul>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/quan-ly-hoa-don">Quản lý hóa đơn</a>
+            <a routerLink="phuc-vu/quan-ly-hoa-don">Quản lý hóa đơn</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/quan-ly-ban">Quản lý bàn</a>
+            <a routerLink="phuc-vu/quan-ly-ban">Quản lý bàn</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzOpen nzTitle="Thu ngân" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/">Thống kê hóa đơn</a>
-          </li>
-        </ul>
-      </li>
-      <li nz-submenu nzOpen nzTitle="Bếp" nzIcon="dashboard">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/">Đơn đặt món</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/">Quản lý kho</a>
+            <a routerLink="thu-ngan/thong-ke-hoa-don">Thống kê hóa đơn</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzOpen nzTitle="Chấm công" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/">Chấm công ngày</a>
+            <a routerLink="cham-cong/cham-cong-ngay">Chấm công ngày</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/">Thống kê chấm công</a>
+            <a routerLink="cham-cong/thong-ke-cham-cong">Thống kê chấm công</a>
           </li>
         </ul>
       </li>
@@ -65,7 +55,15 @@
         </span>
 
         <div>
-          aaaaaaaa
+          <nz-badge [nzCount]="1">
+            <a nz-dropdown [nzDropdownMenu]="menu" class="head-example">
+            </a>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu nzSelectable>
+                <li nz-menu-item (click)="logout()">Đăng xuất</li>
+              </ul>
+            </nz-dropdown-menu>
+          </nz-badge>
         </div>
       </div>
     </nz-header>
@@ -80,17 +78,17 @@
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
               <a>
-                <span *ngIf="currentPage.startsWith('/danh-muc-san-pham')">Danh mục sản phẩm</span>
-                <span *ngIf="currentPage.startsWith('/quan-ly-hoa-don')">Quản lý hóa đơn</span>
-                <span *ngIf="currentPage.startsWith('/quan-ly-ban')">Quản lý bàn</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/danh-muc-san-pham')">Danh mục sản phẩm</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/quan-ly-hoa-don')">Quản lý hóa đơn</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/quan-ly-ban')">Quản lý bàn</span>
               </a>
             </nz-breadcrumb-item>
             <nz-breadcrumb-item *ngIf="currentPage.split('/').length - 1 >= 2">
               <a>
-                <span *ngIf="currentPage.startsWith('/danh-muc-san-pham/tra')">Trà</span>
-                <span *ngIf="currentPage.startsWith('/danh-muc-san-pham/ca-phe')">Cà Phê</span>
-                <span *ngIf="currentPage.startsWith('/danh-muc-san-pham/khac')">Khác</span>
-                <span *ngIf="currentPage.startsWith('/danh-muc-san-pham/banh-snack')">Bánh & Snack</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/danh-muc-san-pham/tra')">Trà</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/danh-muc-san-pham/ca-phe')">Cà Phê</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/danh-muc-san-pham/khac')">Khác</span>
+                <span *ngIf="currentPage.startsWith('/phuc-vu/danh-muc-san-pham/banh-snack')">Bánh & Snack</span>
               </a>
             </nz-breadcrumb-item>
           </nz-breadcrumb>

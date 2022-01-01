@@ -34,6 +34,11 @@ import { CardItemCateComponent } from './card-item-cate/card-item-cate.component
     NzSwitchModule,
     NzImageModule,
     NzGridModule,
+  ],
+  exports: [
+    CarouselComponent,
+    CardItemComponent,
+    CardItemCateComponent
   ]
 })
 export class CashierServiceModule { }

@@ -39,4 +39,8 @@ export class ProductService {
   getCategories(): Observable<ResponseAPI> {
     return this._http.get<ResponseAPI>(environment.ApiEndpoint + `category`);
   }
+
+  findProduct(productId: number, products: Product[]): Product{
+    return products.find(prod => prod.id === productId) as Product;
+  }
 }
