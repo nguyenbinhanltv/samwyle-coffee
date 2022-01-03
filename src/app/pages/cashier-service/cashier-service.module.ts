@@ -15,6 +15,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { CardItemComponent } from './card-item/card-item.component';
 import { CardItemCateComponent } from './card-item-cate/card-item-cate.component';
+import { CommonService } from 'src/app/services/common.service';
 
 
 @NgModule({
@@ -39,6 +40,9 @@ import { CardItemCateComponent } from './card-item-cate/card-item-cate.component
     CarouselComponent,
     CardItemComponent,
     CardItemCateComponent
+  ],
+  providers: [
+    CommonService
   ]
 })
 export class CashierServiceModule { }

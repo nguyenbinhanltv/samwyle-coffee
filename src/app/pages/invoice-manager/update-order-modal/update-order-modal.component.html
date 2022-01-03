@@ -1,0 +1,99 @@
+<nz-steps [nzCurrent]="current" (nzIndexChange)="onIndexChange($event)">
+  <nz-step nzTitle="Chọn thức uống và món ăn" [nzDisabled]="disable">
+  </nz-step>
+  <nz-step nzTitle="Chọn bàn">
+  </nz-step>
+  <nz-step nzTitle="Tổng thông tin hóa đơn">
+  </nz-step>
+</nz-steps>
+<div class="steps-content">
+  <form nz-form (ngSubmit)="submitForm(validateForm.value)" *ngIf="order">
+    <nz-form-item *ngIf="current == 0">
+      <nz-form-label [nzSpan]="7" nzRequired>Trạng thái</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..."
+        nzErrorTip="Hãy chọn trạng thái đơn hàng">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn trạng thái đơn hàng" [(ngModel)]="order.status" [ngModelOptions]="{standalone: true}">
+          <nz-option *ngFor="let st of status" [nzLabel]="st.name" [nzValue]="st.status"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="current == 0">
+      <nz-form-label [nzSpan]="7" nzRequired>Chọn món ăn và thức uống</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..."
+        nzErrorTip="Please input description!">
+        <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+          nzPlaceHolder="Chọn món ăn và thức uống" [(ngModel)]="listOfSelectedValue"
+          (ngModelChange)="onListProductChange($event)" [ngModelOptions]="{standalone: true}">
+          <nz-option *ngFor="let pro of products" [nzLabel]="pro.name" [nzValue]="pro"></nz-option>
+        </nz-select>
+        <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <div *ngIf="listOfSelectedValue && current == 0" class="px-4">
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" class="justify-around">
+        <div nz-col class="gutter-row" [nzSpan]="4" *ngFor="let product of listOfSelectedValue; let i = index">
+          <div class="inner-box">
+            <app-card-item-cate [imageUrl]="product.image_path" [title]="product.name"
+              [description]="product.price.toString()">
+            </app-card-item-cate>
+          </div>
+          <div class="flex justify-between items-center my-2">
+            <label for="">Số lượng:</label>
+            <nz-input-number [nzMin]="1" [nzMax]="10" [nzStep]="1" [(ngModel)]="orderLine[i].quantity"
+              [ngModelOptions]="{standalone: true}"></nz-input-number>
+          </div>
+          <div class="flex justify-between items-center my-2">
+            <label for="">Tổng cộng:</label>
+            <p>{{product.price * orderLine[i].quantity}}.000 đ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nz-form-item *ngIf="current == 1">
+      <nz-form-label [nzSpan]="7" nzRequired>Chọn bàn</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..."
+        nzErrorTip="Hãy chọn trạng thái đơn hàng">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn bàn đang trống" [(ngModel)]="order.table_id" [ngModelOptions]="{standalone: true}">
+          <nz-option *ngFor="let tb of tables" [nzLabel]="tb.path" [nzValue]="tb.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <div *ngIf="tables && current == 1" class="px-4">
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }" class="justify-around">
+        <div nz-col class="gutter-row" [nzSpan]="8" *ngFor="let table of tables; let i = index">
+          <div class="inner-box">
+            <app-table-card [tableId]="table.id" [tableName]="table.path" [status]="table.status"></app-table-card>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="current == 2">
+      <h1 class="title-h1" style=" margin-bottom: 24px;">Samwyle Coffee</h1>
+      <p class="title" style=" margin-bottom: 24px;">Địa chỉ: 29 Trần Quang Diệu Extended St., Phường 13, Quận. 10,
+        Ho Chi Minh City</p>
+      <p class="title" style=" margin-bottom: 24px;">Điện thoại: (84-511) 722350</p>
+      <p class="title" style=" margin-bottom: 24px;">Bàn đặt: Bàn số {{order.table_id}}</p>
+      <nz-descriptions [nzColumn]="5" nzTitle="Chi tiết">
+        <nz-descriptions-item nzTitle="Stt" [nzSpan]="1"></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Tên" [nzSpan]="1"></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Đơn giá" [nzSpan]="1"></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="SL" [nzSpan]="1"></nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Thành tiền" [nzSpan]="1"></nz-descriptions-item>
+      </nz-descriptions>
+      <nz-descriptions [nzColumn]="5" *ngFor="let orl of orderLine; let i = index">
+        <nz-descriptions-item [nzSpan]="1">{{i}}</nz-descriptions-item>
+        <nz-descriptions-item [nzSpan]="1">{{findProduct(products, orl.product_id).name}}</nz-descriptions-item>
+        <nz-descriptions-item [nzSpan]="1">{{orl.price}}.000 đ</nz-descriptions-item>
+        <nz-descriptions-item [nzSpan]="1">{{orl.quantity}}</nz-descriptions-item>
+        <nz-descriptions-item [nzSpan]="1">{{orl.amount}}.000 đ</nz-descriptions-item>
+      </nz-descriptions>
+      <p class="title-end" style=" margin-bottom: 24px;">Tổng cộng: {{order.total}}.000 đ</p>
+      <p class="title-end" style=" margin-bottom: 24px;">Phí tax: {{order.tax}} %</p>
+      <p class="title-end" style=" margin-bottom: 24px;">Tổng dịch vụ: {{order.total * (100 + order.tax) / 100}}.000 đ</p>
+    </div>
+  </form>
+</div>
+<div *nzModalFooter>
+  <button nz-button nzType="default" (click)="destroyModal()">Hủy bỏ</button>
+  <button nz-button nzType="primary" (click)="submitForm(order)">Tạo</button>
+</div>

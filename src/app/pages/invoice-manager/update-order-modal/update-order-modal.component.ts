@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
-import { NzFormTooltipIcon } from 'ng-zorro-antd/form';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 import { forkJoin, Subscription } from 'rxjs';
 import { Order, OrderLine, OrderStatus } from 'src/app/models/order.inteerface';
 import { Product } from 'src/app/models/product.interface';
@@ -12,30 +10,13 @@ import { CommonService } from 'src/app/services/common.service';
 import { InvoiceService } from 'src/app/services/invoice.service';
 import { ProductService } from 'src/app/services/product.service';
 import { TableService } from 'src/app/services/table.service';
-import { UpdateOrderModalComponent } from './update-order-modal/update-order-modal.component';
-
-export interface Data {
-  id: number;
-  name: string;
-  age: number;
-  address: string;
-  disabled: boolean;
-}
 
 @Component({
-  selector: 'app-invoice-manager',
-  templateUrl: './invoice-manager.component.html',
-  styleUrls: ['./invoice-manager.component.scss']
+  selector: 'app-update-order-modal',
+  templateUrl: './update-order-modal.component.html',
+  styleUrls: ['./update-order-modal.component.scss']
 })
-export class InvoiceManagerComponent implements OnInit {
-  tabs = [1, 2, 3];
-
-  isVisible: boolean = false;
-
-  listOfData: Order[] = [];
-  listOfCurrentPageData: Order[] = [];
-  expandSet = new Set<number>();
-
+export class UpdateOrderModalComponent implements OnInit {
   products: Product[] = [];
   tables: Table[] = [];
 
@@ -47,20 +28,19 @@ export class InvoiceManagerComponent implements OnInit {
   listOfSelectedValue: Product[] = [];
   orderLine: OrderLine[] = [];
 
+  order!: Order;
+
   constructor(
-    private fb: FormBuilder,
     private _invoiceService: InvoiceService,
     private _commonService: CommonService,
     public _productService: ProductService,
     private message: NzMessageService,
     private _tableService: TableService,
-    private _modalService: NzModalService
-  ) {
-  }
+    private modal: NzModalRef,
+    private fb: FormBuilder,
+  ) { }
 
   ngOnInit(): void {
-    this.initPage();
-
     this.status = [
       {
         name: 'Đã thanh toán',
@@ -83,58 +63,22 @@ export class InvoiceManagerComponent implements OnInit {
       order_line: [[], [Validators.required]],
       total: [0, [Validators.required]],
     });
+
+    this.initPage();
   }
 
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    this.initPage().unsubscribe();
     this._commonService.detachSpinner();
+  }
+
+  destroyModal(): void {
+    this.modal.destroy();
   }
 
   onIndexChange(index: number): void {
     this.current = index;
-  }
-
-  showModal(): void {
-    this.isVisible = true;
-  }
-
-  handleOk(): void {
-    this.submitForm(this.validateForm.value);
-    this.isVisible = false;
-  }
-
-  handleCancel(): void {
-    this.isVisible = false;
-  }
-
-  onExpandChange(id: number, checked: boolean): void {
-    if (checked) {
-      this.expandSet.add(id);
-    } else {
-      this.expandSet.delete(id);
-    }
-  }
-
-  initPage(): Subscription {
-
-    this._commonService.attachSpinner();
-    return forkJoin({
-      orders: this._invoiceService.getAllOrder(),
-      products: this._productService.getProducts(),
-      tables: this._tableService.getTables()
-    }).subscribe(response => {
-      if (response.products.statusCode === 200 && response.orders.statusCode === 200 && response.tables.statusCode === 200) {
-        this.products = response.products.data as Product[];
-        this.listOfData = response.orders.data as Order[];
-        this.tables = response.tables.data as Table[];
-        this._commonService.detachSpinner();
-      } else {
-        localStorage.removeItem('access_token');
-        this._commonService.detachSpinner();
-      }
-    });
   }
 
   submitForm(value: Order): void {
@@ -152,13 +96,11 @@ export class InvoiceManagerComponent implements OnInit {
     value.order_line = this.orderLine;
     value.total = total;
 
-    this._invoiceService.createOrder(value).subscribe(response => {
-      if (response.statusCode === 201) {
-        this.message.success('Tạo hóa đơn thành công');
-        this.handleCancel();
-        this.initPage();
+    this._invoiceService.updateOrder(value).subscribe(response => {
+      if (response.statusCode === 200) {
+        this.message.success('Cật nhật hóa đơn thành công');
       } else {
-        this.message.error('Tạo hóa đơn thất bại');
+        this.message.error('Cật nhật hóa đơn thất bại');
       }
     });
     console.log(value);
@@ -188,32 +130,39 @@ export class InvoiceManagerComponent implements OnInit {
       total += value.price * value.quantity;
     }
 
+    this.order.order_line = this.orderLine;
+    this.order.total = total;
+
     this.validateForm.value.order_line = this.orderLine;
     this.validateForm.value.total = total;
-    console.log(this.validateForm.value);
   }
 
-  deleteOrder(orderId: number): Subscription {
-    return this._invoiceService.deleteOrder(orderId).subscribe(response => {
-      if (response.statusCode === 200) {
-        this.message.success("Xóa hóa đơn thành công");
-        this.initPage();
-      } else {
-        this.message.error("Xóa hóa đơn thất bại");
+  initPage(): Subscription {
+
+    this._commonService.attachSpinner();
+    return forkJoin({
+      products: this._productService.getProducts(),
+      tables: this._tableService.getTables()
+    }).subscribe(response => {
+      if (response.products.statusCode === 200) {
+        this.products = response.products.data as Product[];
+        this.order = this._invoiceService.currentOrderCanUpdate;
+        this.orderLine = this.order.order_line;
+        for (const ord of this.order.order_line) {
+          this.listOfSelectedValue.push(this.products.find(prod => prod.id === ord.product_id) as Product);
+        }
       }
-    });
-  }
 
-  openUpdateOrderModal(order: Order) {
-    this._invoiceService.currentOrderCanUpdate = order;
-    this._modalService.create({
-      nzTitle: `Cật nhật hóa đơn số ${order.id}`,
-      nzContent: UpdateOrderModalComponent,
-      nzWidth: '80%'
+      if (response.tables.statusCode === 200) {
+        this.tables = response.tables.data as Table[];
+      }
+
+      this._commonService.detachSpinner();
     });
   }
 
   findProduct(products: Product[], productId: number): Product {
     return products.find(product => product.id === productId) as Product;
   }
+
 }

@@ -11,6 +11,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { CommonService } from 'src/app/services/common.service';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzDescriptionsModule,
     NzButtonModule,
     NzIconModule
-  ]
+  ],
+  providers: [CommonService]
 })
 export class DeskManagerModule { }

@@ -28,6 +28,7 @@ export class DeskManagerComponent implements OnInit {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
     this.initPage().unsubscribe();
+    this._commonService.detachSpinner();
   }
   initPage(): Subscription {
     this._commonService.attachSpinner();

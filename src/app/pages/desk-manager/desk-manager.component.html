@@ -3,7 +3,7 @@
     <div nz-col class="gutter-row" [nzSpan]="8" *ngFor="let table of tables; let i = index">
       <div class="inner-box">
         <app-table-card [tableId]="table.id" [tableName]="table.path" [status]="table.status"></app-table-card>
-        <a (click)="open()" nz-button nzType="link">Xem chi tiết hóa đơn</a>
+        <a *ngIf="table.status == 'online'" (click)="open()" nz-button nzType="link">Xem chi tiết hóa đơn</a>
       </div>
     </div>
   </div>

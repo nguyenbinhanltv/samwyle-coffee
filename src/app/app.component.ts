@@ -9,8 +9,6 @@ export class AppComponent {
   constructor(private _authService: AuthService) {
     if(localStorage.getItem('access_token')) {
       this._authService.currentUser.token = localStorage.getItem('access_token') as string;
-    } else {
-
     }
   }
 }

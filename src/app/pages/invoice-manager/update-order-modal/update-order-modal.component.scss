@@ -1,27 +1,5 @@
-.steps-content {
-  margin-top: 16px;
-  border: 1px dashed #e9e9e9;
-  border-radius: 6px;
-  background-color: #fafafa;
-  min-height: 200px;
-  padding-top: 80px;
-}
-
-.inner-box {
-  padding: 8px 0;
-}
-
 .title {
   font-size: 16px;
-  color: rgba(0, 0, 0, 0.85);
-  line-height: 24px;
-  display: block;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-.title-h1 {
-  font-size: 32px;
   color: rgba(0, 0, 0, 0.85);
   line-height: 24px;
   display: block;
@@ -39,6 +17,24 @@
   text-align: end;
 }
 
+.title-h1 {
+  font-size: 32px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 24px;
+  display: block;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
 nz-descriptions {
   padding: 2rem;
+}
+
+.steps-content {
+  margin-top: 16px;
+  border: 1px dashed #e9e9e9;
+  border-radius: 6px;
+  background-color: #fafafa;
+  min-height: 200px;
+  padding-top: 80px;
 }

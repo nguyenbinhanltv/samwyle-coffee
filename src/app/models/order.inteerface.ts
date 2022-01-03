@@ -22,7 +22,7 @@ export interface OrderLine {
 }
 
 export enum OrderStatus {
-  STAFF = 'staff',
+  DRAFT = 'draft',
   DOING = 'doing',
   PAID = 'paid'
 }

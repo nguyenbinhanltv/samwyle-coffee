@@ -9,6 +9,7 @@ import { ResponseAPI } from '../models/response.interface';
   providedIn: 'root'
 })
 export class InvoiceService {
+  currentOrderCanUpdate!: Order;
 
   constructor(private _http: HttpClient) { }
 
@@ -18,5 +19,13 @@ export class InvoiceService {
 
   createOrder(order: Order): Observable<ResponseAPI> {
     return this._http.post<ResponseAPI>(environment.ApiEndpoint + `order`, order);
+  }
+
+  deleteOrder(orderId: number): Observable<ResponseAPI> {
+    return this._http.delete<ResponseAPI>(environment.ApiEndpoint + `order/${orderId}`);
+  }
+
+  updateOrder(order: Order): Observable<ResponseAPI> {
+    return this._http.patch<ResponseAPI>(environment.ApiEndpoint + `order/${order.id}`, order);
   }
 }

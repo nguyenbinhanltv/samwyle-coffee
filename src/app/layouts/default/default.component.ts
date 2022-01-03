@@ -68,7 +68,7 @@ export class DefaultComponent implements OnInit {
           this._authService.currentUser.token = respone.data.access_token;
           localStorage.setItem('access_token', respone.data.access_token);
           this._message.success(`Đăng nhập thành công !`);
-          this._router.navigate(['danh-muc-san-pham']);
+          this._router.navigate(['phuc-vu/danh-muc-san-pham']);
           // if (this._authService.getToken) {
           //   this._authService.getUserInfor(this._authService.getToken).subscribe(user => {
           //     this._authService.currentUser = user.data;

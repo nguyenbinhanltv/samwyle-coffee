@@ -13,17 +13,17 @@ export class CommonService {
   constructor(private overlay: Overlay) { }
 
   public attachSpinner() {
-		if (!this.overlayRef) {
-			this.overlayRef = this.overlay.create();
-		}
+    if (!this.overlayRef) {
+      this.overlayRef = this.overlay.create();
+    }
 
-		const spinnerOverlayPortal = new ComponentPortal(CommonSpinnerComponent);
-		const component = this.overlayRef.attach(spinnerOverlayPortal);
-	}
+    const spinnerOverlayPortal = new ComponentPortal(CommonSpinnerComponent);
+    const component = this.overlayRef.attach(spinnerOverlayPortal);
+  }
 
-	public detachSpinner() {
-		if (!!this.overlayRef) {
-			this.overlayRef.detach();
-		}
-	}
+  public detachSpinner() {
+    if (!!this.overlayRef) {
+      this.overlayRef.detach();
+    }
+  }
 }

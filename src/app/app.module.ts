@@ -12,7 +12,9 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { PortalModule } from '@angular/cdk/portal';
 import { CommonComponentModule } from './components/common.module';
+import { Overlay } from '@angular/cdk/overlay';
 
 registerLocaleData(en);
 
@@ -27,13 +29,18 @@ registerLocaleData(en);
     HttpClientModule,
     BrowserAnimationsModule,
     IconsProviderModule,
-    CommonComponentModule
+    CommonComponentModule,
+    PortalModule
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  },],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    Overlay
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
